@@ -1,6 +1,6 @@
-import {useState} from "react";
-import {useNavigate} from 'react-router-dom';
-import '../styles/login.css';   // Ruta correcta si el archivo está en una carpeta styles
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import '../styles/login.css';
 import '../styles/styles.css';
 
 function Login() {
@@ -9,25 +9,33 @@ function Login() {
     const [password, setPassword] = useState('');
     const [respuesta, setRespuesta] = useState(null);
     const navigate = useNavigate();
+
+    // Usuario predefinido
+    const predefinedUser = {
+        username: "admin",
+        password: "123456",
+        nombre: "Administrador",
+        email: "admin@example.com"
+    };
     
-    async function inicioS() {
-        if (!username) {
-            alert('Escriba un username');
+    function inicioS() {
+        if (!username || !password) {
+            alert('Por favor, complete todos los campos');
             return;
         }
 
-        const data = {username, password};
-        const res = await fetch(
-            'http://127.0.0.1:3030/datos',
-            {
-                body: JSON.stringify(data),
-                method: 'POST',
-                headers: {'Content-Type':'application/json'}
-            }
-        );
-        const resObj = await res.json();
-        setRespuesta(resObj);
+        // Validar las credenciales
+        if (username === predefinedUser.username && password === predefinedUser.password) {
+            setRespuesta({ message: `Bienvenido, ${predefinedUser.nombre}` });
+            // Redirigir a la página de usuarios después de iniciar sesión
+            setTimeout(() => navigate('/usuarios'), 2000); // Navega a la página de Usuarios
+        } else {
+            setRespuesta({ message: 'Credenciales incorrectas' });
+        }
+
+        // Limpiar los campos después de intentar iniciar sesión
         setUsername('');
+        setPassword('');
     }
 
     return (
